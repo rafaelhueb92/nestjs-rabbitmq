@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - '15672:15672' # RabbitMQ Management UI
+      - '5672:5672' # RabbitMQ AMQP protocol
+    networks:
+      - mynetwork
+
+  nestjs-app:
+    build: .
+    container_name: nestjs-app
+    ports:
+      - '3000:3000'
+    depends_on:
+      - rabbitmq
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
